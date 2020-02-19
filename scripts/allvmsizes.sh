@@ -335,10 +335,11 @@ fi
 
 #####################
 SAPBITSDIR="/hana/data/sapbits"
+WGETCMD="/usr/bin/wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0 --continue --retry 50"
 
 if [ "${hanapackage}" = "51053787" ]
 then 
-  /usr/bin/wget --quiet $Uri/SapBits/${hanapackage}.ZIP
+  $WGETCMD $Uri/SapBits/${hanapackage}.ZIP
   cd $SAPBITSDIR
   mkdir ${hanapackage}
   cd ${hanapackage}
@@ -348,10 +349,11 @@ then
   zypper install -y libatomic1
 else
   cd /hana/data/sapbits
-  /usr/bin/wget --quiet $Uri/SapBits/${hanapackage}_part1.exe
-  /usr/bin/wget --quiet $Uri/SapBits/${hanapackage}_part2.rar
-  /usr/bin/wget --quiet $Uri/SapBits/${hanapackage}_part3.rar
-  /usr/bin/wget --quiet $Uri/SapBits/${hanapackage}_part4.rar
+
+  $WGETCMD $Uri/SapBits/${hanapackage}_part1.exe
+  $WGETCMD $Uri/SapBits/${hanapackage}_part2.rar
+  $WGETCMD $Uri/SapBits/${hanapackage}_part3.rar
+  $WGETCMD $Uri/SapBits/${hanapackage}_part4.rar
   cd $SAPBITSDIR
 
   echo "hana unrar start" >> /tmp/parameter.txt
@@ -368,8 +370,8 @@ fi
 #!/bin/bash
 cd /hana/data/sapbits
 echo "hana download start" >> /tmp/parameter.txt
-/usr/bin/wget --quiet $Uri/SapBits/md5sums
-/usr/bin/wget --quiet "https://raw.githubusercontent.com/AzureCAT-GSI/SAP-HANA-ARM/master/hdbinst.cfg"
+$WGETCMD $Uri/SapBits/md5sums
+$WGETCMD "https://raw.githubusercontent.com/rolazare-MSFT/SAP-LAB/master/hdbinst.cfg"
 echo "hana download end" >> /tmp/parameter.txt
 
 date >> /tmp/testdate
@@ -391,7 +393,8 @@ cat hdbinst.cfg | sed $sedcmd | sed $sedcmd2 | sed $sedcmd3 | sed $sedcmd4 | sed
 echo "hana preapre end" >> /tmp/parameter.txt
 
 #put host entry in hosts file using instance metadata api
-VMIPADDR=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/privateIpAddress?api-version=2017-08-01&format=text"`
+#VMIPADDR=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/privateIpAddress?api-version=2017-08-01&format=text"`
+VMIPADDR="10.0.5.4"
 VMNAME=`hostname`
 cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
