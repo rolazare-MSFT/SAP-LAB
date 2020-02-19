@@ -52,8 +52,7 @@ VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/
 
 
 #install hana prereqs
-systemctl start guestregister.service
-sleep 30
+while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper up -y cloud-regionsrv-client
 zypper install -y glibc-2.22-51.6
 zypper install -y systemd-228-142.1
