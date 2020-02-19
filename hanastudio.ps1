@@ -23,7 +23,7 @@ param (
         New-item -Path $hanapath -itemtype directory
     }
     write-host "downloading files"
-    #Invoke-WebRequest $sapcarUri -OutFile $sapcardest
+    Invoke-WebRequest $sapcarUri -OutFile $sapcardest
     Invoke-WebRequest $hanastudioUri -OutFile $hanastudiodest
     Invoke-WebRequest $jreUri -OutFile $jredest
     #Invoke-WebRequest $7zUri -OutFile $7zdest
