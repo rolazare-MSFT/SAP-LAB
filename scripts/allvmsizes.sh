@@ -50,14 +50,18 @@ fi
 #get the VM size via the instance api
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
 
-
 #install hana prereqs
 while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper up -y cloud-regionsrv-client
+while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper install -y glibc-2.22-51.6
+while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper install -y systemd-228-142.1
+while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper install -y unrar
+while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper install -y sapconf
+while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper install -y saptune
 mkdir /etc/systemd/login.conf.d
 mkdir /hana
@@ -67,6 +71,7 @@ mkdir /hana/shared
 mkdir /hana/backup
 mkdir /usr/sap
 
+while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
 zypper in -t pattern -y sap-hana
 saptune solution apply HANA
 saptune daemon start
@@ -291,7 +296,6 @@ if [ $VMSIZE == "Standard_M128ms" || [ $VMSIZE == "Standard_M208ms_v2" ]; then
   mkfs -t xfs /dev/usrsapvg/usrsaplv
 fi
 
-#!/bin/bash
 echo "mounthanashared start" >> /tmp/parameter.txt
 mount -t xfs /dev/sharedvg/sharedlv /hana/shared
 mount -t xfs /dev/backupvg/backuplv /hana/backup 
@@ -346,6 +350,8 @@ then
   unzip ../${hanapackage}.ZIP
   cd $SAPBITSDIR
   #add additional requirement
+  
+  while `true`; do systemctl restart guestregister.service; zypper up -y cloud-regionsrv-client | grep "Nothing to do"; [ $? -eq 0 ] && break; done
   zypper install -y libatomic1
 else
   cd /hana/data/sapbits
@@ -357,7 +363,6 @@ else
   cd $SAPBITSDIR
 
   echo "hana unrar start" >> /tmp/parameter.txt
-  #!/bin/bash
   cd $SAPBITSDIR
   unrar  -o- x ${hanapackage}_part1.exe
   echo "hana unrar end" >> /tmp/parameter.txt
@@ -365,9 +370,6 @@ else
 fi
 #####################
 
-
-
-#!/bin/bash
 cd /hana/data/sapbits
 echo "hana download start" >> /tmp/parameter.txt
 $WGETCMD $Uri/SapBits/md5sums
@@ -380,7 +382,6 @@ cd /hana/data/sapbits
 echo "hana prepare start" >> /tmp/parameter.txt
 cd /hana/data/sapbits
 
-#!/bin/bash
 cd /hana/data/sapbits
 myhost=`hostname`
 sedcmd="s/REPLACE-WITH-HOSTNAME/$myhost/g"
@@ -400,7 +401,6 @@ cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
 EOF
 
-#!/bin/bash
 echo "install hana start" >> /tmp/parameter.txt
 cd /hana/data/sapbits/${hanapackage}/DATA_UNITS/HDB_LCM_LINUX_X86_64
 /hana/data/sapbits/${hanapackage}/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile /hana/data/sapbits/hdbinst-local.cfg
